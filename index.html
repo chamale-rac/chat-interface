@@ -1,22 +1,68 @@
-<!DOCTYPE html>
 <html>
+  <head>
+  </head>
+  <body>
+    <script type="application/javascript">
+      const form = document.createElement('form')
+      const input = document.createElement('input')
+      const button = document.createElement('button')
+      button.append('SEND')
+      form.append(input)
+      form.append(button)
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title></title>
-</head>
+      const ul = document.createElement('ul')
 
-<body>
-  <script>
-    const ul = document.createElement("ul")
-    const il = document.createElement("li")
-    ul.append(li)
-    li.append("Hello World")
-    li.style.color = "red"
-    li.style.backgroundColor = "black"
-    document.body.append(ul)
-  </script>
-</body>
+      const Message = (text, user) => {
+        const li = document.createElement('li')
+        
+        const userSpan = document.createElement('span')
+        userSpan.append(`${user}: `)
+        userSpan.style.fontWeight = 'bold'
+        li.append(userSpan)
+        li.append(text)
 
+        return li
+      }
+
+      const getMessages = async () => {
+        const response = await fetch('http://uvgenios.online/api/messages')
+        const messages = await response.json()
+
+        const lis = messages.map((message) => Message(message.text, message.user))
+        lis.forEach((li) => ul.append(li))
+      }
+
+
+      const postMessage = async (text) => {
+        const body = {
+          text,
+          user: 'dennis'
+        }
+        const response = await fetch('http://uvgenios.online/api/messages', {
+          method: 'POST',
+          body: JSON.stringify(body),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        return response
+      }
+
+      getMessages()
+
+      button.addEventListener('click', async (event) => {
+        event.preventDefault()
+
+        await postMessage(input.value)
+        ul.innerHTML = ""
+        getMessages()
+        
+      })
+
+
+
+      document.body.append(form)
+      document.body.append(ul)
+    </script>
+  </body>
 </html>
