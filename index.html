@@ -2,66 +2,80 @@
   <head>
   </head>
   <body>
-    <script type="application/javascript">
-      const form = document.createElement('form')
-      const input = document.createElement('input')
-      const button = document.createElement('button')
-      button.append('SEND')
-      form.append(input)
-      form.append(button)
-
+    <script>
+      const ulStyle = `
+        list-style-type: none; 
+      `
+      
+      const liStyle = `
+      `
+      
+      const spanStyle = `
+        font-weight: bold;
+      `
+      
+      const detailsStyle = `
+      `
+      
+      const summaryStyle = `
+      `
+      
+      const formStyle = `
+            `
+            
+      const inputStyle = `
+            `
+            
+      const buttonStyle = `
+            `
+      
       const ul = document.createElement('ul')
-
-      const Message = (text, user) => {
+      ul.style.cssText = ulStyle
+      
+      const messageElements = () => {
         const li = document.createElement('li')
+        const span = document.createElement('span')
+        const details = document.createElement('details')
+        const summary = document.createElement('summary')
         
-        const userSpan = document.createElement('span')
-        userSpan.append(`${user}: `)
-        userSpan.style.fontWeight = 'bold'
-        li.append(userSpan)
+        li.style.cssText = liStyle
+        span.style.cssText = spanStyle
+        details.style.cssText = detailsStyle
+        summary.style.cssText = summaryStyle
+        
+        return [li, span, details, summary]
+      }
+      
+      const messageStructure = (text, user, created_on) => {
+        const [li, span, details, summary] = messageStructure()
+        
+        span.append(`${user}:`)
+        summary.append()
+        
+        li.append(span)
         li.append(text)
-
+        
         return li
       }
-
+      
       const getMessages = async () => {
         const response = await fetch('http://uvgenios.online/api/messages')
         const messages = await response.json()
-
-        const lis = messages.map((message) => Message(message.text, message.user))
-        lis.forEach((li) => ul.append(li))
-      }
-
-
-      const postMessage = async (text) => {
-        const body = {
-          text,
-          user: 'dennis'
-        }
-        const response = await fetch('http://uvgenios.online/api/messages', {
-          method: 'POST',
-          body: JSON.stringify(body),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        return response
-      }
-
-      getMessages()
-
-      button.addEventListener('click', async (event) => {
-        event.preventDefault()
-
-        await postMessage(input.value)
-        ul.innerHTML = ""
-        getMessages()
         
-      })
-
-
-
-      document.body.append(form)
+        const liList = messages.map((message) => renderMessage(
+          Message(message.text, message.user, message.created_on)
+          ))
+        liList.forEach((li) => ul.append(li))
+      }
+      
+      // styling
+      ul.style.cssText = ulStyle
+      li.style.cssText = liStyle
+      
+      
+      // DOM
+      li.append('Hola')
+      ul.append(li)
       document.body.append(ul)
     </script>
   </body>
